@@ -1,0 +1,299 @@
+html{
+    height: 100%;
+    min-height: 100%:
+}
+
+#navbar {
+    padding: 0 20px 0 20px;
+    display: grid;
+    grid-template-columns: 50px 50px 1fr 50px 80px 50px 50px;
+    grid-template-rows: 50px;
+    grid-template-areas: "about store . images advanced menu sign-in";
+    opacity:0.75;
+
+}
+#title {
+    color: #d93025;
+    font-size: 18px;
+    font-family: arial,sans-serif;
+    padding: 25px 25px 25px 45px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+a {
+    text-decoration: none;
+    color: rgb(32,32,32);
+    font-family: arial, sans-serif;
+    font-size: 13px;
+
+}
+a:hover {
+    text-decoration:underline;
+}
+
+
+#about{
+    grid-area: about;
+    justify-self:center;
+    align-self:center;
+}
+
+#store{
+    grid-area: store;
+    justify-self:center;
+    align-self:center;
+}
+
+#advanced{
+    grid-area: advanced;
+    justify-self:center;
+    align-self:center;
+}
+
+#images {
+    grid-area: images;
+    justify-self:center;
+    align-self:center;
+}
+
+#menu {
+    grid-area: menu;
+    justify-self:center;
+    align-self:center;
+    height: 30px;
+    width: 30px;
+    background-color: transparent;
+}
+#sign-in {
+    grid-area: sign-in;
+    justify-self:center;
+    align-self:center;
+}
+
+#main {
+    display: grid;
+    grid-template-columns: 30% 40% 30%;
+    grid-template-rows: 220px 70px 50px 250px;
+    grid-template-areas: 
+    ". logo ."
+    ". search ."
+    ". search ."
+    ". googletext .";
+}
+#advancedField {
+    margin: 40px 19.55px 0 45px;
+}
+
+#range {
+    display:grid;
+    grid-template-columns: 1fr 50px 1fr;
+}
+
+#range > p {
+    text-align:center;
+    color: #222;
+    font-size: 13px;
+    font-family: arial,sans-serif;
+}
+
+
+#advancedField > h1 {
+    font-family: arial,sans-serif;
+    color: #333;
+    font-size: 16px;
+    height: 42px;
+}
+#advancedTable > p {
+    height: 42px;
+    color: #222;
+    font-size: 13px;
+    font-family: arial,sans-serif;
+}
+
+#advancedTable {
+    display: grid;
+    grid-template-columns: 167px 60%;
+    grid-template-rows: 42px 42px 42px 42px 42px 42px;
+
+
+}
+
+#range > input, #advancedTable > input {
+    border-radius: 1px;
+    border: 1px solid #d9d9d9;
+    border-top: 1px solid #c0c0c0;
+    font-size: 13px;
+    height: 25px;
+    padding: 1px 8px;
+}
+
+#logo {
+    grid-area: logo;
+    justify-self:center;
+    align-self: end;
+    padding-bottom: 30px;
+    position: relative;
+}
+
+#logo > span {
+    color: #4285f4;
+    font: 16px/16px roboto-regular, arial, sans-serif;
+    position: absolute;
+    bottom: 38px;
+    right:0px;
+    white-space: nowrap;
+}
+
+
+#searchGrid {
+    grid-area: search;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+    "bar bar"
+    "search-btn random-btn";
+
+}
+
+form {
+    grid-area: bar;
+    position:relative;
+}
+
+#search {
+    height: 40px;
+    width:90%;
+    border: 1px solid black;
+    border-radius: 30px;
+    outline:none;
+
+}
+
+input[type="text"]{
+    padding: 0 0px 0 35px;
+}
+
+#search:hover{
+    box-shadow: 1px 1px 5px grey;
+}
+
+#searchButtons {
+    display:flex;
+    justify-content: center;
+    position:relative;
+}
+
+
+#advanced-btn {
+    /* background-color: #4d90fe; */
+    background-image: linear-gradient(#4d90fe,#4787ed);
+    border: 1px solid #3079ed;
+    color: #fff;
+    padding: 0 12px;
+    height: 30px;
+    outline: 0;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 2px;
+    cursor: default;
+    position:absolute;
+    right: 0px;
+
+}
+
+#search-btn {
+    grid-area: search-btn;
+    border:none;
+    font-size: 13px;
+    padding:10px 15px 10px 15px;
+    margin-right: 5px;
+    border-radius: 5%;
+}
+
+#image-btn {
+    outline: none;
+    border: none;
+    background-color: transparent;
+    position: absolute;
+    bottom: 35px;
+    right: 6%;
+    cursor: pointer;
+}
+
+#searchIcon {
+    background-color:transparent;
+    position:absolute;
+    top:12px;
+    left: 10px;
+}
+
+#search-btn:hover{
+    border: 1px solid #c6c6c6;
+    background-color: #f8f8f8;
+}
+
+#random-btn {
+    margin-left:5px;
+    grid-area: random-btn;
+    border:none;
+    font-size: 13px;
+    padding:10px 15px 10px 15px;
+    border-radius: 5%;
+}
+
+#random-btn:hover {
+    border: 1px solid #c6c6c6;
+    background-color: #f8f8f8;
+}
+
+#googletext {
+    grid-area: googletext;
+    font-family:arial, sans-serif;
+    justify-self:center;
+    margin-top:30px;
+    font-size:13px;
+}
+
+#footer {
+    position:absolute;
+    bottom: 0;
+    width:100%;
+    display: grid;
+    grid-template-columns: 100px 100px 150px 1fr 70px 70px 70px;
+    grid-template-rows: 35px;
+    grid-template-areas: " advertising business howsearchworks . privacy terms settings";
+    background-color: #f2f2f2;
+    border-top: 1px solid #c6c6c6;
+    opacity: 0.8;
+}
+
+#advertising, #howsearchworks, #business, #privacy, #terms, #settings {
+    justify-self: center;
+    align-self: center;
+}
+
+#advertising{
+    grid-area: advertising;
+}
+
+#howsearchworks{
+    grid-area: howsearchworks;
+}
+
+#business{
+    grid-area: business;
+}
+
+#privacy{
+    grid-area: privacy;
+}
+
+#terms {
+    grid-area: terms;
+}
+
+#settings {
+    grid-area:settings;
+}
