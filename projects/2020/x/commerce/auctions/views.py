@@ -4,12 +4,16 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Listing
-from .forms import CreateListingForm
+from .models import User, Listing, Bid
+from .forms import CreateListingForm, CreateBid
+from django.db.models import Max
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    active_listings = Listing.objects.filter(status="True")
+    return render(request, "auctions/index.html", {
+        "active_listings": active_listings
+    })
 
 
 def login_view(request):
@@ -66,11 +70,33 @@ def register(request):
 def listing(request,listing_id):
     try:
         listing = Listing.objects.get(id=listing_id)
+        alert = None
     except Listing.DoesNotExist:
         raise Http404("Listing not found.")
+
+    if request.method == "POST":
+        form = CreateBid(request.POST)
+
+        if form.is_valid():
+            bid = form.cleaned_data['bid']
+            if listing.bid_listing.all():
+                highest_bid = listing.bid_listing.all().last().bid
+            else:
+                highest_bid = 0.00
+            
+            if bid <= highest_bid or bid <= listing.starting_price:
+                alert = "Bid is too low."
+            else:
+                Bid(bid=bid, user=request.user, listing=Listing.objects.get(id=listing.id)).save()
+    else:
+        form = CreateBid()
+
+
     return render(request, "auctions/listing.html", {
         "listing": listing,
-        "bids": listing.bid_listing.all().order_by('-bid')
+        "bids": listing.bid_listing.all().order_by('-bid'),
+        "form": form,
+        "alert": alert
     })
 
 
@@ -89,7 +115,7 @@ def create_listing(request):
             owner = request.user
             image = form.cleaned_data['image']
             
-            listing(title=title, description=description, starting_price=starting_price, owner=owner, image=image).save()
+            Listing(title=title, description=description, starting_price=starting_price, owner=owner, image=image).save()
             return HttpResponseRedirect(reverse("index"))
     else:
         form = CreateListingForm()

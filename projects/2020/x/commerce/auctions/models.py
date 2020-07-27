@@ -18,6 +18,7 @@ class Listing(models.Model):
     owner           = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner")
     image           = models.URLField(blank=True) # Default max_length=200
     status          = models.BooleanField(default=True)
+    # highest_bid     = models.ForeignKey(Bid.aggregate(Max('bid')), related_name="highest_bid" )
     # owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner")
     # price = models.ForeignKey(Bids, on_delete=models.CASCADE, related_name="bids")
     # comment = models.ForeignKey(Comments, on_delete=models.CASCADE, related_name="Comments")

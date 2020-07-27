@@ -4,7 +4,9 @@
 <h2>Listing: {{ listing.title }}</h2>
 
 {% if listing.image %}
-    <img src="{{ listing.image }}" alt="Listing Image" width=300 height=300>
+    <img src="{{ listing.image }}" alt="Listing Image" height=300>
+{% else %}
+    <img src="https://makitweb.com/demo/broken_image/images/noimage.png" alt="No Image" height=300>
 {% endif %}
 <h3>Item Description:</h3>
 <p>{{ listing.description }}</p>
@@ -19,16 +21,22 @@
         Your bid is the current bid.
     {% endif %}
 </p>
-
 <!-- 
     Todo:
         Insert Bid Function, takes in bid value (If it's > starting price and highest bid)
         Takes in username
 -->
 
-<!-- {% for bid in bids %}
-<li>{{ bid.bid }} || {{ bid.user }}</li>
-{% endfor %} -->
+{% if user.is_authenticated %}
+<form action="{% url 'listing' listing.id %}" method="POST">
+    {% csrf_token %}
+    {{ form }}
+    {% if alert %}
+        <p>{{ alert }}</p>
+    {% endif %}
+    <input type="submit" value="Enter Bid">
+</form>
+{% endif %}
 
 
 <div>
