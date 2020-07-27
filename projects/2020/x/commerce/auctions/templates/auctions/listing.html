@@ -1,0 +1,43 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h2>Listing: {{ listing.title }}</h2>
+
+{% if listing.image %}
+    <img src="{{ listing.image }}" alt="Listing Image" width=300 height=300>
+{% endif %}
+<h3>Item Description:</h3>
+<p>{{ listing.description }}</p>
+<h5>List Price: ${{ listing.starting_price }}</h5>
+
+{% if bids %}
+<h3>Current Bid: ${{ bids.first.bid }}</h3>
+{% endif %}
+
+<p>There are currently {{ bids.count }} bids.
+    {% if bids.first.user == request.user %}
+        Your bid is the current bid.
+    {% endif %}
+</p>
+
+<!-- 
+    Todo:
+        Insert Bid Function, takes in bid value (If it's > starting price and highest bid)
+        Takes in username
+-->
+
+<!-- {% for bid in bids %}
+<li>{{ bid.bid }} || {{ bid.user }}</li>
+{% endfor %} -->
+
+
+<div>
+    <h2>Details</h2>
+    <ul>
+        <li>Listed by: {{ listing.owner }}</li>
+        <li>Listed on: {{ listing.date }}</li>
+    </ul>
+</div>
+
+
+{% endblock %}
