@@ -8,37 +8,53 @@
 {% else %}
     <img src="https://makitweb.com/demo/broken_image/images/noimage.png" alt="No Image" height=300>
 {% endif %}
+
 <h3>Item Description:</h3>
 <p>{{ listing.description }}</p>
 <h5>List Price: ${{ listing.starting_price }}</h5>
 
-{% if bids %}
-<h3>Current Bid: ${{ bids.first.bid }}</h3>
-{% endif %}
-
-<p>There are currently {{ bids.count }} bids.
-    {% if bids.first.user == request.user %}
-        Your bid is the current bid.
+{% if listing.status == True %}
+    {% if bids %}
+    <h3>Current Bid: ${{ bids.first.bid }}</h3>
     {% endif %}
-</p>
-<!-- 
-    Todo:
-        Insert Bid Function, takes in bid value (If it's > starting price and highest bid)
-        Takes in username
--->
 
-{% if user.is_authenticated %}
-<form action="{% url 'listing' listing.id %}" method="POST">
-    {% csrf_token %}
-    {{ form }}
-    {% if alert %}
-        <p>{{ alert }}</p>
+    <p>There are currently {{ bids.count }} bids.
+        {% if bids.first.user == request.user %}
+            Your bid is the current bid.
+        {% endif %}
+    </p>
+    <!-- 
+        Todo:
+            Insert Bid Function, takes in bid value (If it's > starting price and highest bid)
+            Takes in username
+    -->
+
+    {% if user.is_authenticated %}
+        {% if request.user == listing.owner %}
+            <form action="{% url 'close_listing' listing.id %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" value="Close Listing">
+            </form>
+        {% else %}
+            <form action="{% url 'listing' listing.id %}" method="POST">
+                {% csrf_token %}
+                {{ bid_form }}
+                {% if alert %}
+                    <p>{{ alert }}</p>
+                {% endif %}
+                <input type="submit" value="Enter Bid">
+            </form>
+        {% endif %}
     {% endif %}
-    <input type="submit" value="Enter Bid">
-</form>
+
+{% else %}
+    <p>LISTING HAS CLOSED</p>
+    {% if bids %}
+        <p>{{ bids.first.user}} won the bid for ${{ bids.first.bid }}.</p>
+    {% else %}
+        <p>There were no bidders. Item is no longer being sold.</p>
+    {% endif %}
 {% endif %}
-
-
 <div>
     <h2>Details</h2>
     <ul>

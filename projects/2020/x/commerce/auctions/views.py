@@ -75,27 +75,28 @@ def listing(request,listing_id):
         raise Http404("Listing not found.")
 
     if request.method == "POST":
-        form = CreateBid(request.POST)
+        bid_form = CreateBid(request.POST)
 
-        if form.is_valid():
-            bid = form.cleaned_data['bid']
+        if bid_form.is_valid():
+            bid = bid_form.cleaned_data['bid']
             if listing.bid_listing.all():
                 highest_bid = listing.bid_listing.all().last().bid
             else:
                 highest_bid = 0.00
             
-            if bid <= highest_bid or bid <= listing.starting_price:
+            if bid <= highest_bid or bid < listing.starting_price:
+                # Bid can be same as starting price
                 alert = "Bid is too low."
             else:
                 Bid(bid=bid, user=request.user, listing=Listing.objects.get(id=listing.id)).save()
     else:
-        form = CreateBid()
+        bid_form = CreateBid()
 
 
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "bids": listing.bid_listing.all().order_by('-bid'),
-        "form": form,
+        "bid_form": bid_form,
         "alert": alert
     })
 
@@ -123,3 +124,14 @@ def create_listing(request):
     return render(request, 'auctions/create.html', {
         'form': form
     })
+
+def close_listing(request, listing_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+
+    if Listing.objects.get(pk=listing_id).owner == request.user:
+        listing = Listing.objects.get(pk=listing_id)
+        listing.status = False
+        listing.save()
+
+    return HttpResponseRedirect(reverse("listing", kwargs={"listing_id": listing_id}))
