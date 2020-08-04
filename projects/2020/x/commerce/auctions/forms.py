@@ -8,3 +8,7 @@ class CreateListingForm(forms.Form):
 
 class CreateBid(forms.Form):
     bid = forms.DecimalField(decimal_places=2)
+
+class CreateComment(forms.Form):
+    comment = forms.CharField(max_length=600, widget=forms.Textarea)
+

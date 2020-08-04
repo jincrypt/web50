@@ -3,9 +3,10 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
-from .models import User, Listing, Bid
-from .forms import CreateListingForm, CreateBid
+from .models import User, Listing, Bid, Comment
+from .forms import CreateListingForm, CreateBid, CreateComment
 from django.db.models import Max
 
 
@@ -67,9 +68,11 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+
 def listing(request,listing_id):
     try:
         listing = Listing.objects.get(id=listing_id)
+        comment_form = CreateComment()
         alert = None
     except Listing.DoesNotExist:
         raise Http404("Listing not found.")
@@ -88,24 +91,22 @@ def listing(request,listing_id):
                 # Bid can be same as starting price
                 alert = "Bid is too low."
             else:
-                Bid(bid=bid, user=request.user, listing=Listing.objects.get(id=listing.id)).save()
+                Bid(bid=bid, user=request.user, listing=Listing.objects.get(id=listing_id)).save()
     else:
         bid_form = CreateBid()
-
 
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "bids": listing.bid_listing.all().order_by('-bid'),
         "bid_form": bid_form,
-        "alert": alert
+        "alert": alert,
+        "comment_form": comment_form,
+        "comments": listing.comment_listing.all()
     })
 
 
+@login_required
 def create_listing(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("login"))
-
-
     if request.method == "POST":
         form = CreateListingForm(request.POST)
         
@@ -124,14 +125,41 @@ def create_listing(request):
     return render(request, 'auctions/create.html', {
         'form': form
     })
+    
 
+@login_required
 def close_listing(request, listing_id):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("login"))
-
     if Listing.objects.get(pk=listing_id).owner == request.user:
         listing = Listing.objects.get(pk=listing_id)
         listing.status = False
         listing.save()
 
     return HttpResponseRedirect(reverse("listing", kwargs={"listing_id": listing_id}))
+
+
+@login_required
+def comment_listing(request, listing_id):
+    if request.method == "POST":
+        comment_form = CreateComment(request.POST)
+
+        if comment_form.is_valid():
+            comment_text = comment_form.cleaned_data['comment']
+            Comment(listing=Listing.objects.get(id=listing_id), user=request.user, comment=comment_text).save()
+
+    return HttpResponseRedirect(reverse("listing", kwargs={"listing_id": listing_id}))
+
+
+@login_required
+def watchlist_listing(request, listing_id, action):
+    if request.method == "POST":
+        listing = Listing.objects.get(id=listing_id)
+        if action == "add":
+            request.user.watchlist.add(listing)
+        else:
+            request.user.watchlist.remove(listing)
+
+    return HttpResponseRedirect(reverse("listing", kwargs={"listing_id": listing_id}))
+
+@login_required
+def watchlist(request):
+    return render(request, 'auctions/watchlist.html')

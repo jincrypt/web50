@@ -5,10 +5,7 @@ from django.db import models
 # variables should be underscored lowercase
 
 class User(AbstractUser):
-    # bids = models.ManyToManyField(Bids, blank=True, related_name="bids")
-
-    pass
-    
+    watchlist = models.ManyToManyField('Listing', blank=True, related_name="watchlist")
 
 class Listing(models.Model):
     title           = models.CharField(max_length=100)
@@ -18,22 +15,26 @@ class Listing(models.Model):
     owner           = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner")
     image           = models.URLField(blank=True) # Default max_length=200
     status          = models.BooleanField(default=True)
-    # highest_bid     = models.ForeignKey(Bid.aggregate(Max('bid')), related_name="highest_bid" )
-    # owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner")
-    # price = models.ForeignKey(Bids, on_delete=models.CASCADE, related_name="bids")
-    # comment = models.ForeignKey(Comments, on_delete=models.CASCADE, related_name="Comments")
+    category        = models.ForeignKey('Categories', null=True, related_name="listing_category", on_delete=models.SET_NULL)
+
+    
 
 class Bid(models.Model):
     user    = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bid_user")
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bid_listing")
     bid     = models.DecimalField(max_digits=11, decimal_places=2)
-    # starting_bid = models.DecimalField(decimal_places=2)
-    # current_bid = models.DecimalField(decimal_places=2)
 
 
-class Comment():
-    # comment = models.CharField(max_length=200)
+class Comment(models.Model):
+    user    = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comment_user")
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comment_listing")
+    comment = models.TextField(max_length=600)
+    date    = models.DateTimeField(auto_now_add=True)
 
-    # listing = models.ForeignKey(Listings, on_delete=models.CASCADE, related_name=)
 
-    pass
+class Categories(models.Model):
+    category = models.CharField(max_length=10)
+
+# class Watchlist(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlist_user")
+#     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="watchlist_listing")

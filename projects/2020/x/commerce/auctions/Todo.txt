@@ -1,15 +1,19 @@
-Comment Model
-Comment Function on listing page (only if signed in)
+[Done] Comment Model
+[Done] Comment Function on listing page (only if signed in)
+        Comment section styling (show limited # + button to show all? or maybe pages? i dont know ....)
+        
+[Done] Watchlist Model
+[Done] Watchlist Function on listing page
+[Done] Watchlist page for user if signed in. clicking on listings here should bring u to listings page
 
-Watchlist Model
-Watchlist Function on listing page
-Watchlist page for user if signed in. clicking on listings here should bring u to listings page
 
-
-on listing page, if you're on a closed page and you're the user who won, it should say you won
+[Done] on listing page, if you're on a closed page and you're the user who won, it should say you won
 
 create categories
-create link to listings for categories (default no category?s)
+create link to listings for categories (default no category?)
 categories page (list of categories). clicking on categories should bring up a page that lists active listings in that category 
 
 add a closed listings page?
+
+admin page
+- add or delete any listings, comments, bids
