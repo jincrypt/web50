@@ -9,11 +9,12 @@
 
 [Done] on listing page, if you're on a closed page and you're the user who won, it should say you won
 
-create categories
-create link to listings for categories (default no category?)
-categories page (list of categories). clicking on categories should bring up a page that lists active listings in that category 
+[Done] create categories
+[Done] create link to listings for categories (default no category?)
+[Done] categories page (list of categories). clicking on categories should bring up a page that lists active listings in that category 
 
 add a closed listings page?
+CSS and shit...
 
 admin page
 - add or delete any listings, comments, bids

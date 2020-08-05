@@ -78,6 +78,13 @@
 <div>
     <h2>Details</h2>
     <ul>
+        <li>Category: 
+            {% if listing.category is None %}
+                Uncategorized
+            {% else %}
+                {{ listing.category }}
+            {% endif %}
+        </li>
         <li>Listed by: {{ listing.owner }}</li>
         <li>Listed on: {{ listing.date }}</li>
     </ul>

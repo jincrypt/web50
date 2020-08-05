@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import User, Listing, Bid, Comment
+from .models import User, Listing, Bid, Comment, Categories
 from .forms import CreateListingForm, CreateBid, CreateComment
 from django.db.models import Max
 
@@ -116,8 +116,12 @@ def create_listing(request):
             starting_price = form.cleaned_data['starting_price']
             owner = request.user
             image = form.cleaned_data['image']
-            
-            Listing(title=title, description=description, starting_price=starting_price, owner=owner, image=image).save()
+            category = form.cleaned_data['category']
+            if category == "":
+                category = None
+            else:
+                category = Categories.objects.get(category=category)
+            Listing(title=title, description=description, starting_price=starting_price, owner=owner, image=image, category=category).save()
             return HttpResponseRedirect(reverse("index"))
     else:
         form = CreateListingForm()
@@ -163,3 +167,24 @@ def watchlist_listing(request, listing_id, action):
 @login_required
 def watchlist(request):
     return render(request, 'auctions/watchlist.html')
+
+def categories(request):
+    categories_list = Categories.objects.all()
+    return render(request, 'auctions/categories.html', {
+        'categories': categories_list
+    })
+
+def category(request, category_name):
+    if category_name != 'None':
+        category_id = Categories.objects.get(category=category_name).id
+        # category_name = Categories.objects.get(category=category_name).category
+    else:
+        category_id = None
+        category_name = "Uncategorized"
+
+    category_list = Listing.objects.filter(category=category_id)
+
+    return render(request, 'auctions/category.html', {
+        'category_list': category_list,
+        'category_name': category_name
+    })
