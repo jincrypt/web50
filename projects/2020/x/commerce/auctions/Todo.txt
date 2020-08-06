@@ -15,6 +15,13 @@
 
 add a closed listings page?
 CSS and shit...
-
+        [Done] index
+        [Done] create
+        [Done] category
+        [Done] categories
+        listing
+        [Done] login
+        [Done] register
+        [Done] watchlist
 admin page
 - add or delete any listings, comments, bids
