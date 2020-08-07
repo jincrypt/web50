@@ -25,5 +25,8 @@ class CreateBid(forms.Form):
     bid = forms.DecimalField(decimal_places=2)
 
 class CreateComment(forms.Form):
-    comment = forms.CharField(max_length=600, widget=forms.Textarea)
-
+    comment = forms.CharField(label='', max_length=600, widget=forms.Textarea(attrs={
+        'class' : 'form-control my-2 mx-2',
+        'rows' : 3,
+        'placeholder' : "Write your comment here",
+        }))

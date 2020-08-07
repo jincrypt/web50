@@ -3,31 +3,38 @@
 {% block body %}
 <h2>Listing: {{ listing.title }}</h2>
 
-<!-- Watchlist Function -->
-{% if user.is_authenticated %}
-    {% if listing in user.watchlist.all %}
-        <form action="{% url 'watchlist_listing' listing.id 'remove' %}" method="POST">
-            {% csrf_token %}
-            <button class="btn btn-secondary"  type="submit">Watchlist: Remove</button>
-        </form>
-        
-    {% else %}
-        <form action="{% url 'watchlist_listing' listing.id 'add' %}" method="POST">
-            {% csrf_token %}
-            <button class="btn btn-primary" type="submit">Watchlist: Add</button>
-        </form>
+<div class="col-md-6 container">
+
+    <!-- Watchlist Function -->
+    <div class="mb-2">
+    {% if user.is_authenticated %}
+        {% if listing in user.watchlist.all %}
+            <form action="{% url 'watchlist_listing' listing.id 'remove' %}" method="POST">
+                {% csrf_token %}
+                <button class="btn btn-secondary"  type="submit">Watchlist: Remove</button>
+            </form>
+            
+        {% else %}
+            <form action="{% url 'watchlist_listing' listing.id 'add' %}" method="POST">
+                {% csrf_token %}
+                <button class="btn btn-primary" type="submit">Watchlist: Add</button>
+            </form>
+        {% endif %}
     {% endif %}
-{% endif %}
+    </div>
 
-{% if listing.image %}
-    <img src="{{ listing.image }}" alt="Listing Image" height=300>
-{% else %}
-    <img src="https://makitweb.com/demo/broken_image/images/noimage.png" alt="No Image" height=300>
-{% endif %}
+    <!-- Listing Image -->
+    <div class="text-center container mb-2">
+    {% if listing.image %}
+        <img src="{{ listing.image }}" alt="Listing Image" height=300>
+    {% else %}
+        <img src="https://makitweb.com/demo/broken_image/images/noimage.png" alt="No Image" height=300>
+    {% endif %}
+    </div>
 
-<h3>Item Description:</h3>
-<p>{{ listing.description }}</p>
-<h5>List Price: ${{ listing.starting_price }}</h5>
+    <h3 class="mt-4">Item Description:</h3>
+    <p class="text-justify text-wrap">{{ listing.description }}</p>
+    <h5>List Price: ${{ listing.starting_price }}</h5>
 
 {% if listing.status == True %}
     {% if bids %}
@@ -75,38 +82,46 @@
         <p>There were no bidders. Item is no longer being sold.</p>
     {% endif %}
 {% endif %}
-<div>
-    <h2>Details</h2>
-    <ul>
-        <li>Category: 
-            {% if listing.category is None %}
-                Uncategorized
-            {% else %}
-                {{ listing.category }}
-            {% endif %}
-        </li>
-        <li>Listed by: {{ listing.owner }}</li>
-        <li>Listed on: {{ listing.date }}</li>
-    </ul>
+
+    <!-- Details -->
+        <h2 class="mt-4">Details</h2>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item col-md-4"><b>Category:</b> 
+                {% if listing.category is None %}
+                    Uncategorized
+                {% else %}
+                    {{ listing.category }}
+                {% endif %}
+            </li>
+            <li class="list-group-item col-md-4"><b>Listed by:</b> {{ listing.owner }}</li>
+            <li class="list-group-item col-md-4"><b>Listed on:</b> {{ listing.date|date:"N d, Y" }}</li>
+        </ul>
+
+
+    <!-- Comments -->
+        <h3 class="mt-4">Comments</h3>
+
+        {% for comment in comments %}
+        <div class="mb-2" style="border-bottom: 1px dotted #ccc">
+            <div class="media container mt-2">
+                <div class="media-body">
+                    <h5 class="media-heading user_name" style="font-size:14px; font-weight: bold">{{ comment.user }}</h5>
+                    <p class="pull-right"><small>{{ comment.date|date:"N d, Y" }}</small></p>
+                    {{ comment.comment }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+
+        {% if user.is_authenticated %}
+            <form action="{% url 'comment_listing' listing.id %}" method="POST">
+                {% csrf_token %}
+                {{ comment_form }}
+                <input class="btn btn-primary" type="submit" value="Submit">
+            </form>
+        {% endif %}
+
 </div>
 
-
-<!-- Comments -->
-<h3>Comments</h3>
-{% for comment in comments %}
-    <p>
-        {{ comment.comment }}
-        {{ comment.user }}
-        {{ comment.date }}
-    </p>
-{% endfor %}
-
-
-{% if user.is_authenticated %}
-    <form action="{% url 'comment_listing' listing.id %}" method="POST">
-        {% csrf_token %}
-        {{ comment_form }}
-        <input type="submit" value="Submit">
-    </form>
-{% endif %}
 {% endblock %}
