@@ -34,7 +34,7 @@ class Listing(models.Model):
     owner           = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner")
     image           = models.URLField(blank=True) # Default max_length=200
     status          = models.BooleanField(default=True)
-    category        = models.ForeignKey(Categories, null=True, related_name="listing_category", on_delete=models.SET_NULL)
+    category        = models.ForeignKey(Categories, null=True, related_name="listing_category", on_delete=models.SET_NULL, blank=True)
 
     def __str__(self):
         return f'Listing #{self.id}: {self.title}'

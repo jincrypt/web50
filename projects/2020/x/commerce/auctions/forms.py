@@ -22,7 +22,8 @@ class CreateListingForm(forms.Form):
     category        = forms.ChoiceField(label="Choices", choices=Categories.CATEGORY_CHOICES, required=False, widget=forms.Select(attrs={'class' : 'form-control col-md-2 mb-3'}))
 
 class CreateBid(forms.Form):
-    bid = forms.DecimalField(decimal_places=2)
+    bid = forms.DecimalField(decimal_places=2, label='', widget=forms.NumberInput(attrs={
+        'class' : 'col-md-2 mb-3 form-control'}))
 
 class CreateComment(forms.Form):
     comment = forms.CharField(label='', max_length=600, widget=forms.Textarea(attrs={

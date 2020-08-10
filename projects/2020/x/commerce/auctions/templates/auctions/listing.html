@@ -33,19 +33,24 @@
     </div>
 
     <h3 class="mt-4">Item Description:</h3>
-    <p class="text-justify text-wrap">{{ listing.description }}</p>
-    <h5>List Price: ${{ listing.starting_price }}</h5>
+    <p class="text-justify text-wrap ml-4">{{ listing.description }}</p>
 
-{% if listing.status == True %}
-    {% if bids %}
-    <h3>Current Bid: ${{ bids.first.bid }}</h3>
-    {% endif %}
+    {% if listing.status == True %}
+        <h5 class="mt-4">Current Price: $
+            {% if bids %}
+                {{ bids.first.bid }}
+            {% else %}
+                {{ listing.starting_price }}
+            {% endif %}</h5>
 
-    <p>There are currently {{ bids.count }} bids.
-        {% if bids.first.user == request.user %}
-            Your bid is the current bid.
-        {% endif %}
-    </p>
+        <p class="pull-right">
+            There are currently {{ bids.count }} bids.
+            <br>
+            {% if bids.first.user == request.user %}
+                Your bid is the current bid.
+            {% endif %}
+        </p>
+
     <!-- 
         Todo:
             Insert Bid Function, takes in bid value (If it's > starting price and highest bid)
@@ -56,15 +61,20 @@
         {% if request.user == listing.owner %}
             <form action="{% url 'close_listing' listing.id %}" method="POST">
                 {% csrf_token %}
-                <input type="submit" value="Close Listing">
+                <input class="ml-4 btn btn-warning" type="submit" value="Close Listing">
             </form>
         {% else %}
-            <form action="{% url 'listing' listing.id %}" method="POST">
+            <form class="form-inline" action="{% url 'listing' listing.id %}" method="POST">
                 {% csrf_token %}
+                <div class="ml-4 mb-3 input-group-prepend">
+                    <div class="input-group-text">$</div>
+                </div>
                 {{ bid_form }}
-                <input type="submit" value="Enter Bid">
+                <input class="ml-3 mb-3 btn btn-primary" type="submit" value="Bid Now">
                 {% if alert %}
-                    <p>{{ alert }}</p>
+                    <div class="alert alert-light" role="alert">
+                        {{ alert }}
+                    </div>
                 {% endif %}
             </form>
         {% endif %}
