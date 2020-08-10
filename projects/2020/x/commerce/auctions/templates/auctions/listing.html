@@ -81,16 +81,18 @@
     {% endif %}
 
 {% else %}
-    <p>LISTING HAS CLOSED</p>
+    <h5 class="mt-4">LISTING HAS CLOSED</h5>
+    <p class="ml-3">
     {% if bids %}
         {% if bids.first.user == user %}
-            <p>Congratulations! You won this listing.</p>
+            Congratulations! You won this listing for ${{ bids.first.bid }}.
         {% else %}
-            <p>{{ bids.first.user}} won the bid for ${{ bids.first.bid }}.</p>
+            {{ bids.first.user }} won the bid for ${{ bids.first.bid }}.
         {% endif %}
     {% else %}
-        <p>There were no bidders. Item is no longer being sold.</p>
+        There were no bidders. Item is no longer being sold.
     {% endif %}
+    </p>
 {% endif %}
 
     <!-- Details -->
