@@ -51,12 +51,6 @@
             {% endif %}
         </p>
 
-    <!-- 
-        Todo:
-            Insert Bid Function, takes in bid value (If it's > starting price and highest bid)
-            Takes in username
-    -->
-
     {% if user.is_authenticated %}
         {% if request.user == listing.owner %}
             <form action="{% url 'close_listing' listing.id %}" method="POST">
