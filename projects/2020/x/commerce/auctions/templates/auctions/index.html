@@ -16,7 +16,7 @@
                                 <h5 class="card-title"><u>{{ listing.title }}</u></h5>
                                 <p class="card-text">
                                     {% if listing.bid_listing.all %}
-                                        Current Bid: ${{ listing.bid_listing.all.first.bid }}
+                                        Current Bid: ${{ listing.bid_listing.all.last.bid }}
                                     {% else %}
                                         Starting Bid: ${{ listing.starting_price }}              
                                     {% endif %}
