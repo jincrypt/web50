@@ -180,7 +180,7 @@ function show_email(email, mailbox) {
         })
       } else {
         archive.innerHTML = 'Unarchive';;
-        archive.className = 'btn btn-warning pull-right';
+        archive.className = 'btn btn-warning float-right';
         archive.addEventListener('click', function() {
           fetch(`/emails/${email.id}`, {
             method: 'PUT',
