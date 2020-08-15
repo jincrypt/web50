@@ -149,7 +149,7 @@ function show_email(email, mailbox) {
                     </tbody>
                     `;
 
-    document.querySelector('#emails-view').innerHTML = `<h2>${subject}<small class="pull-right">${date}</small></h2>`;
+    document.querySelector('#emails-view').innerHTML = `<h2>${subject}<small class="float-right">${date}</small></h2>`;
     document.querySelector('#emails-view').append(table);
     const buttons = document.createElement('div');
     buttons.className = 'mt-2';
@@ -169,7 +169,7 @@ function show_email(email, mailbox) {
       const archive = document.createElement('button');
       if (email.archived === false) {
         archive.innerHTML = 'Archive';;
-        archive.className = 'btn btn-danger pull-right';
+        archive.className = 'btn btn-danger float-right';
         archive.addEventListener('click', function() {
           fetch(`/emails/${email.id}`, {
             method: 'PUT',
