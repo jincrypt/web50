@@ -9,11 +9,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // By default, load the inbox
   load_mailbox('inbox');
 
-});
+})
 
 
 function compose_email() {
-
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
@@ -25,14 +24,10 @@ function compose_email() {
   
   // Add submit function
   form = document.querySelector('#compose-form');
-  // form.setAttribute("method", "POST");
-  // form.setAttribute("action", "/emails");
-
   form.onsubmit = function() {
     const recipient = document.querySelector('#compose-recipients').value;
     const subject = document.querySelector('#compose-subject').value;
     const body =  document.querySelector('#compose-body').value;
-    form = document.querySelector
 
     fetch('/emails', {
       method: 'POST',
@@ -50,7 +45,7 @@ function compose_email() {
           alert(data['error'])
         })
       }
-    });
+    })
     
     // Prevents default submit action
     return false;
@@ -67,7 +62,7 @@ function load_mailbox(mailbox) {
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
-  create_table(mailbox)
+  create_table(mailbox);
 }
 
 
@@ -101,7 +96,6 @@ function create_table(mailbox) {
         const time = data[i].timestamp;
         const id = data[i].id;
 
-
         // Read background to grey as per specifications
         if (data[i].read === true) {
           new_row.className = 'table-active';
@@ -115,17 +109,98 @@ function create_table(mailbox) {
 
         new_row.addEventListener('click', function() {
           fetch(`/emails/${id}`)
-          .then(response => response.json().then(email => {
-            console.log(email);
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~TODO */
-            // Insert Function for something
-          }))
+          .then(response => response.json().then(email => show_email(email, mailbox)))
         })
 
-        // Insert email into table
+        // Insert email into table  
         table.insertBefore(new_row,null);
-
       }
-    });
-  });
+    })
+  })
+}
+
+
+function show_email(email, mailbox) {
+  const subject = email.subject;
+  const recipient = email.recipients.join('; ');
+  const sender = email.sender;
+  const body = email.body;
+  const date = email.timestamp;
+  const table = document.createElement('table');
+  table.className = 'table table-sm';
+
+  table.innerHTML = `
+                    <thead class="">
+                      <tr>
+                        <th style="width: 15%" scope="row">Recipient</th>
+                        <td style="width: 85%">${recipient}</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">Sender</th>
+                        <td>${sender}</td>
+                      </tr>
+                    </tbody>
+                    <tbody>
+                      <tr>
+                        <td colspan="2"><pre>${body}</pre></td>
+                      </tr>
+                    </tbody>
+                    `;
+
+    document.querySelector('#emails-view').innerHTML = `<h2>${subject}<small class="pull-right">${date}</small></h2>`;
+    document.querySelector('#emails-view').append(table);
+    const buttons = document.createElement('div');
+    buttons.className = 'mt-2';
+    const reply = document.createElement('button');
+    reply.className = 'btn btn-primary';
+    reply.innerHTML = 'Reply';
+    reply.addEventListener('click', function() {
+          compose_email();
+          document.querySelector('#compose-recipients').value = sender;
+          document.querySelector('#compose-subject').value = (subject.slice(0,4) === 'Re: ') ? subject : 'Re: ' + subject;
+          document.querySelector('#compose-body').value = `On ${date} ${sender} wrote: ${body}`;
+    })
+
+    buttons.append(reply);
+
+    if (mailbox != 'sent') {
+      const archive = document.createElement('button');
+      if (email.archived === false) {
+        archive.innerHTML = 'Archive';;
+        archive.className = 'btn btn-danger pull-right';
+        archive.addEventListener('click', function() {
+          fetch(`/emails/${email.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                archived: true
+            })
+          }).then(() => load_mailbox('inbox'));
+        })
+      } else {
+        archive.innerHTML = 'Unarchive';;
+        archive.className = 'btn btn-warning pull-right';
+        archive.addEventListener('click', function() {
+          fetch(`/emails/${email.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                archived: false
+            })
+          }).then(() => load_mailbox('inbox'));
+        })
+      }
+      buttons.append(archive)
+    }
+
+  document.querySelector('#emails-view').append(buttons);
+
+  if (email.read === false) {
+    fetch(`/emails/${email.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+          read: true
+      })
+    })
+  }
 }
