@@ -11,6 +11,8 @@ urlpatterns = [
 
     # API Routes
     path("posts", views.posts, name="posts"),
+    path("posts/<int:post_id>", views.reload_post, name="reload"),
+    path("edit_post/<int:post_id>", views.edit_post, name="edit")
 
     # # API Routes
     # path("emails", views.compose, name="compose"),

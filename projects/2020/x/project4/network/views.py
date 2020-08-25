@@ -68,7 +68,7 @@ def posts(request):
     if request.method == "POST":
         data = json.loads(request.body)
         owner = request.user
-        body = data.get("body","")
+        body = data.get("body")
         new_post = Post(
             user = owner,
             body = body
@@ -84,3 +84,22 @@ def posts(request):
         posts = Post.objects.all()
         posts = posts.order_by("-timestamp").all()
         return JsonResponse([post.serialize() for post in posts], safe=False)
+
+def edit_post(request, post_id):
+    if request.method == "PUT":
+        post_edit = Post.objects.get(id=post_id)
+        data = json.loads(request.body)
+
+        post_edit.body = data['new_body']
+
+        try:
+            post_edit.full_clean()
+            post_edit.save()
+            return JsonResponse({"message": "Post Updated Successfully."}, status=204)
+        except ValidationError as e:
+            return JsonResponse({"message": e.message_dict['body']}, status=400)
+
+def reload_post(request, post_id):
+    if request.method == "GET":
+        post = Post.objects.get(id=post_id)
+        return JsonResponse(post.serialize())

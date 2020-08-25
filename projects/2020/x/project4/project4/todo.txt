@@ -1,0 +1,31 @@
+Styling of new post and all posts
+
+all posts
+- Likes (initially 0)
+
+Profile page
+- clicking on username should load user profile page (posts, top, etc)
+- display number of followers the user has
+- display number of people that user follows 
+- display all posts for that user in reverse chronological order
+- if user is not owner, there should be a toggable follow/unfollow button (cannot follow yourself)
+
+Following
+- following link brings you to a page where they see all posts made by users that you follow
+- page behaves the same as "All Posts" with more limited set of posts (see email?)
+
+
+Pagination
+- 10 posts per page
+- next, previous only in specs
+
+Edit Posts
+- edit own posts
+- content of post changes to text area where you can edit right away
+- should be able to see a save button after
+- no need to reload entire page
+- ensure user == owner (noone else cna forcefully edit)
+
+Like/Unlike
+- like + Unlike
+- using javascript, asynchronously let the server know ot update the like count via fetch? and update the post's like count displayed on page without reloading the entire page.
