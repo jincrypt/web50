@@ -5,8 +5,9 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.core.exceptions import ValidationError
+from django.core import serializers
 
-from .models import User, Post
+from .models import User, Post, Followers
 
 
 def index(request):
@@ -64,6 +65,62 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
+
+def profile(request, owner):
+    user = User.objects.get(username=owner)
+    posts = user.posts.all().order_by('-timestamp')
+    # ! this might be able to be done via fetch?
+    # ! maybe the fetch will only update followers?
+    # Followers (who is following owner)
+    followers = Followers.objects.filter(following=user.id)
+    # Following (who is owner following?)
+    following = Followers.objects.filter(followee=user.id)
+
+    return render(request, "network/profile.html", {
+        "owner": owner,
+        "followers": followers,
+        "following": following,
+        "posts": posts
+    })
+
+
+def UserRelationship(request, owner):
+
+    followee_user = User.objects.get(username=request.user)
+    following_user = User.objects.get(username=owner)
+    
+    try: 
+        relationship = Followers.objects.get(followee=followee_user.id, following=following_user.id)
+    except:
+        relationship = False
+
+    if request.method == "GET":
+        if relationship:
+            return JsonResponse({"message": 'User is currently following'}, status=204)
+        else:
+            return JsonResponse({"message": 'User is not a follower'}, status=200)
+        
+
+    if request.method == "PUT":
+        if relationship:
+            relationship.delete()
+            return JsonResponse({"message": f'{followee_user} is no longer following {following_user}.'}, status=204)
+        else:
+            new_following = Followers(followee=followee_user, following=following_user)
+            try:
+                new_following.full_clean()
+                new_following.save()
+                return JsonResponse({"message": f'{followee_user} is now following {following_user}.'}, status=204)
+            except ValidationError as e:
+                return JsonResponse({"message": e.message_dict['body']}, status=400)
+
+
+def FollowerCount(request, owner):
+    owner = User.objects.get(username=owner).id
+    follower_count = Followers.objects.filter(following=owner).count()
+    return JsonResponse({'follower_count': follower_count}) 
+
+
 def posts(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -102,4 +159,7 @@ def edit_post(request, post_id):
 def reload_post(request, post_id):
     if request.method == "GET":
         post = Post.objects.get(id=post_id)
-        return JsonResponse(post.serialize())
+        if request.user == post.user:
+            return JsonResponse(post.serialize())
+        else:
+            return JsonResponse({"message": "Bad Actor"}, status=400)

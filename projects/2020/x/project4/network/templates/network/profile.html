@@ -1,0 +1,47 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div data-name="{{ owner }}" id="owner">
+    this is {{ owner }}'s page
+</div>
+
+
+{% if user.username != owner %}
+<div data-name="{{ owner }}" id="buttons">
+
+</div>
+{% endif %}
+
+    {% if user.is_authenticated %}
+    {% endif %}
+
+<h1>{{owner}} is Following {{ following.count }} people</h1>
+{% for person in following %}
+<a href="{% url 'profile' person.following %}">{{ person.following }}</a>
+{% endfor %}
+
+<h1>Followers</h1>
+<h2><span id="followers">{{followers.count}}</span></h2>
+
+{% for person in followers %}
+<a href="{% url 'profile' person.followee %}">{{ person.followee }}</a>
+{% endfor %}
+
+
+<h1>{{ owner }}'s Posts</h1>
+<div id="user_posts">
+{% for post in posts %}
+    {{post.body}}
+    {{post.user}}
+    {{post.timestamp}}
+{% endfor %}
+
+</div>
+{% endblock %}
+
+
+
+{% block script %}
+    <script src="{% static 'network/profile.js' %}"></script>
+{% endblock %}

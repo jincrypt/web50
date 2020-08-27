@@ -4,11 +4,12 @@ all posts
 - Likes (initially 0)
 
 Profile page
-- clicking on username should load user profile page (posts, top, etc)
-- display number of followers the user has
-- display number of people that user follows 
-- display all posts for that user in reverse chronological order
-- if user is not owner, there should be a toggable follow/unfollow button (cannot follow yourself)
+- [done] clicking on username should load user profile page (posts, top, etc)
+- [done] display number of followers the user has
+- [done] display number of people that user follows 
+- [done] display all posts for that user in reverse chronological order
+- [done] if user is not owner, there should be a toggable follow/unfollow button (cannot follow yourself)
+- styling
 
 Following
 - following link brings you to a page where they see all posts made by users that you follow
@@ -20,11 +21,13 @@ Pagination
 - next, previous only in specs
 
 Edit Posts
-- edit own posts
-- content of post changes to text area where you can edit right away
-- should be able to see a save button after
-- no need to reload entire page
-- ensure user == owner (noone else cna forcefully edit)
+- [done] edit own posts
+- [done] content of post changes to text area where you can edit right away
+- [done] should be able to see a save button after
+- [done] no need to reload entire page
+- [done] ensure user == owner (noone else cna forcefully edit)
+- do i need to add some text showing it's been edited???????
+- styling
 
 Like/Unlike
 - like + Unlike
