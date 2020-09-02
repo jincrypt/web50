@@ -14,7 +14,7 @@ class Post(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="posts")
     body = models.CharField(blank=False, max_length=280)
     timestamp = models.DateTimeField(auto_now_add=True)
-    # likes = models.PositiveIntegerField(default=0)
+    likes = models.PositiveIntegerField(default=0)
 
     def serialize(self):
         return {
@@ -22,6 +22,7 @@ class Post(models.Model):
             "user": self.user.username,
             "body": self.body,
             "timestamp": self.timestamp.strftime("%b %#d %Y, %#I:%M %p"),
+            "likes": self.likes
         }
 
 
@@ -31,3 +32,8 @@ class Followers(models.Model):
 
     def __str__(self):
         return f'{self.followee} is following {self.following}'
+
+
+class Likes(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="likes_user")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes_post")

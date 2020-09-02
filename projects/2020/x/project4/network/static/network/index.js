@@ -18,6 +18,28 @@ function load_post(post_id) {
 
 
 function all_posts() {
+{/* <div id="post">
+  <div id="user">
+    <a href="/profile/frasulov">frasulov</a>
+  </div>
+  <div class="detail">
+    <h3>Fagan</h3>
+    <div>Iyiyim sen nasilsin?</div>
+    <div class="text-muted" style="font-size: 14px;">
+      August 03, 2020 09:31:23
+    </div>
+    <div>
+      <span>
+        <i style="color:red" class="fas fa-heart" aria-hidden="true"></i>
+        3 people liked
+      </span>
+    </div>
+  </div>
+</div> */} 
+
+
+
+
     const all_posts = document.querySelector('#all_posts');
     all_posts.innerHTML = ''
     fetch('/posts')
@@ -29,6 +51,7 @@ function all_posts() {
         const timestamp = data[i].timestamp;
         const new_post = document.createElement('div')
         const post_id = data[i]['id']
+        const likes = data[i]['likes']
 
         new_post.className = 'mb-2'
         new_post.style = 'border-bottom: 1px dotted #ccc'
@@ -36,9 +59,12 @@ function all_posts() {
         new_post.innerHTML = `
                               <div class="media container mt-2">
                                   <div class="media-body">
-                                      <h5 class="media-heading user_name" style="font-size:14px; font-weight: bold">${ owner }
+                                      <h5 class="media-heading user_name" style="font-size:14px; font-weight: bold">
+                                      <a href='profile/${owner}'>${ owner }</a>
+                                      </h5>
                                       <p class="float-right"><small>${ timestamp }</small></p></h5>
                                       <p data-id=${ post_id }>${ body }</p>
+                                      <p data-likesid=${ post_id }>${ likes }</p>
                                   </div>
                               </div>`
 
@@ -49,9 +75,25 @@ function all_posts() {
           edit.setAttribute('data-id', post_id);
           edit.addEventListener('click', () => edit_post(post_id))
           new_post.appendChild(edit)
+        } else {
+          const likebutton = document.createElement('button');
+
+          // like_unlike returns a promise object. So we need to callback to apply the result
+          like_unlike(post_id)
+          .then(result => {
+            likebutton.innerHTML= result
+          });
+          likebutton.className = 'btn btn-primary';
+          likebutton.setAttribute('data-likesid', post_id);
+          // likebutton.addEventListener('click', () => edit_post(post_id))
+          new_post.appendChild(likebutton)
         }
 
+
+
         all_posts.append(new_post);
+
+
       }
       console.log(data);
     })
@@ -164,3 +206,44 @@ function new_post() {
     return false;
   }
 }
+
+async function like_unlike(post_id) {
+  let response = await fetch(`/like/${post_id}`)
+  let result = response.status;
+  console.log(result)
+  let test = ''
+  if (result === 204) {
+    test = 'Unlike'
+  } else {
+    test ='Like'
+  }
+  console.log(result, test)
+  return test
+}
+//  !! Doesnt work. Promises have to resolve before it returns.... back to the drawing board for likes
+// function like_unlike(post_id) {
+//   const button_div = document.createElement('div')
+//   var result = ''
+//   fetch(`/like/${post_id}`)
+//   .then(response => {
+//     if (response.status === 204) {
+//       // const like_button = document.createElement('button')
+//       // like_button.className = 'btn btn-secondary'
+//       // like_button.innerHTML = 'Like'
+//       result = 'Hello';
+
+//     } else {
+//       // const unlike_button = document.createElement('button')
+//       // unlike_button.className = 'btn btn-secondary'
+//       // unlike_button.innerHTML = 'Unlike'
+
+//       // button_div.innerHTML= ''
+//       // button_div.appendChild(unlike_button)
+//       console.log('test')
+//       result = 'bye'
+
+//     }
+//   })
+//   .then(response=>{
+//     return result})
+// }

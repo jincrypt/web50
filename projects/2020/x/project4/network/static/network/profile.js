@@ -37,7 +37,6 @@ function follow_unfollow() {
         })
         button_div.innerHTML= ''
         button_div.appendChild(unfollow_button)
-        console.log('204')
       } else {
         console.log(response.status)
         const follow_button = document.createElement('button')

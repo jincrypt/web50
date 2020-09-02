@@ -12,8 +12,9 @@ Profile page
 - styling
 
 Following
-- following link brings you to a page where they see all posts made by users that you follow
-- page behaves the same as "All Posts" with more limited set of posts (see email?)
+- [done] following link brings you to a page where they see all posts made by users that you follow
+- [done] page behaves the same as "All Posts" with more limited set of posts (see email?)
+- styling
 
 
 Pagination

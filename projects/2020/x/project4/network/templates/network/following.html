@@ -1,0 +1,15 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+<h1>Following</h1>
+
+{% for post in posts %}
+    {{ post.body }}
+{% endfor %}
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
+{% endblock %}

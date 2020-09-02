@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.core import serializers
 
-from .models import User, Post, Followers
+from .models import User, Post, Followers, Likes
 
 
 def index(request):
@@ -163,3 +163,50 @@ def reload_post(request, post_id):
             return JsonResponse(post.serialize())
         else:
             return JsonResponse({"message": "Bad Actor"}, status=400)
+
+
+def following(request):
+    owner_id = User.objects.get(username=request.user).id
+    followers = list(User.objects.filter(follow=owner_id))
+    posts = Post.objects.filter(user__in=followers).order_by('-timestamp')
+
+    return render(request, "network/following.html", {
+        "posts":posts
+    })
+
+def like(request, post_id):
+    owner = User.objects.get(username=request.user).id
+    post = Post.objects.get(id=post_id)
+
+
+    try:
+        like_status = Likes.objects.get(user=owner, post=post.id)
+    except:
+        like_status = False
+
+    if request.method == "GET":
+        if like_status:
+            return JsonResponse({"message": 'User current likes the post'}, status=204)
+        else:
+            return JsonResponse({"message": "User doesn't like"}, status=200)
+
+
+
+    if request.method =="PUT":
+        if like_status:
+            like_status.delete()
+            post.likes = Likes.objects.filter(post=post_id).count()
+
+            return JsonResponse({"message": f'unliked'}, status=204)
+        else:
+            new_like = Likes(user=owner, post=post)
+            try:
+                new_like.full_clean()
+                new_like.save()
+                return JsonResponse({"message": f'like'}, status=204)
+            except ValidationError as e:
+                return JsonResponse({"message": e.message_dict['body']}, status=400)
+    
+
+
+        
